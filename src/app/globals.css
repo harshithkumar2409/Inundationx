@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --dark-900: #0F172A;
+  --dark-800: #1E293B;
+  --dark-700: #334155;
+  --brand-blue: #2563EB;
+  --brand-amber: #F59E0B;
+  --brand-red: #EF4444;
+  --brand-green: #22C55E;
+  --brand-cyan: #06B6D4;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--dark-900);
+  color: #e2e8f0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dark-700);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Leaflet fixes for dark theme */
+.leaflet-container {
+  background: var(--dark-800) !important;
+  border-radius: 12px;
+}
+
+.leaflet-control-zoom a {
+  background: var(--dark-800) !important;
+  color: #e2e8f0 !important;
+  border-color: var(--dark-700) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--dark-800) !important;
+  color: #e2e8f0 !important;
+  border-radius: 12px !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--dark-800) !important;
+}
+
+/* Alert pulse animation */
+@keyframes alert-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-alert-pulse {
+  animation: alert-pulse 2s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #2563EB, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass card effect */
+.glass-card {
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 16px;
+}
+
+/* SOS pulse ring */
+@keyframes sos-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.sos-ring {
+  animation: sos-ring 1.5s ease-out infinite;
+}

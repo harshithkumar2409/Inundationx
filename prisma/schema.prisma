@@ -1,0 +1,179 @@
+// Prisma schema for InundationX - Flood Prediction Platform
+// Database: SQLite (easy to demo for SIH judges)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./inundationx.db"
+}
+
+// ─── Districts & Regions ────────────────────────────────────
+model District {
+  id          Int      @id @default(autoincrement())
+  name        String
+  state       String
+  latitude    Float
+  longitude   Float
+  population  Int
+  area        Float    // sq km
+  riskLevel   String   @default("LOW") // LOW, MODERATE, HIGH, SEVERE
+  createdAt   DateTime @default(now())
+
+  alerts      Alert[]
+  predictions Prediction[]
+  shelters    Shelter[]
+  sosRequests SOSRequest[]
+  reports     CitizenReport[]
+  riverStations RiverStation[]
+}
+
+// ─── Weather & Rainfall Data ────────────────────────────────
+model RainfallData {
+  id            Int      @id @default(autoincrement())
+  districtId    Int
+  timestamp     DateTime
+  rainfall      Float    // mm
+  humidity      Float    // %
+  windSpeed     Float    // km/h
+  temperature   Float    // °C
+  pressure      Float    // hPa
+  source        String   // IMD, SATELLITE, RADAR, AWS
+  createdAt     DateTime @default(now())
+}
+
+// ─── AI Predictions ─────────────────────────────────────────
+model Prediction {
+  id              Int      @id @default(autoincrement())
+  districtId      Int
+  district        District @relation(fields: [districtId], references: [id])
+  forecastHours   Int      // 6, 12, 24, 48, 72
+  predictedRainfall Float  // mm
+  floodProbability  Float  // 0-100
+  inundationDepth   Float  // meters
+  confidence        Float  // 0-100
+  modelUsed         String // LSTM, XGBoost, Ensemble
+  riskLevel         String // LOW, MODERATE, HIGH, SEVERE
+  timestamp         DateTime
+  createdAt         DateTime @default(now())
+}
+
+// ─── Alerts ─────────────────────────────────────────────────
+model Alert {
+  id              Int      @id @default(autoincrement())
+  districtId      Int
+  district        District @relation(fields: [districtId], references: [id])
+  level           String   // GREEN, YELLOW, ORANGE, RED
+  title           String
+  description     String
+  expectedRainfall Float   // mm
+  predictedDepth   Float   // meters
+  action          String   // recommended action
+  isActive        Boolean  @default(true)
+  issuedAt        DateTime
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+}
+
+// ─── River Monitoring ───────────────────────────────────────
+model RiverStation {
+  id            Int      @id @default(autoincrement())
+  name          String
+  riverName     String
+  districtId    Int
+  district      District @relation(fields: [districtId], references: [id])
+  latitude      Float
+  longitude     Float
+  currentLevel  Float    // meters
+  dangerLevel   Float    // meters
+  warningLevel  Float    // meters
+  trend         String   // RISING, STABLE, FALLING
+  lastUpdated   DateTime
+}
+
+// ─── SOS Requests ───────────────────────────────────────────
+model SOSRequest {
+  id            Int      @id @default(autoincrement())
+  name          String
+  phone         String
+  districtId    Int
+  district      District @relation(fields: [districtId], references: [id])
+  latitude      Float
+  longitude     Float
+  address       String
+  severity      String   // LOW, MEDIUM, HIGH, CRITICAL
+  status        String   @default("RECEIVED") // RECEIVED, TEAM_ASSIGNED, IN_PROGRESS, COMPLETED
+  teamAssigned  String?
+  peopleCount   Int      @default(1)
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ─── Citizen Reports ────────────────────────────────────────
+model CitizenReport {
+  id            Int      @id @default(autoincrement())
+  name          String
+  phone         String
+  districtId    Int
+  district      District @relation(fields: [districtId], references: [id])
+  latitude      Float
+  longitude     Float
+  address       String
+  floodSeverity String   // ANKLE, KNEE, WAIST, CHEST, ABOVE_HEAD
+  waterLevel    Float?   // meters
+  description   String
+  imageUrl      String?
+  verified      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+// ─── Shelters ───────────────────────────────────────────────
+model Shelter {
+  id            Int      @id @default(autoincrement())
+  name          String
+  districtId    Int
+  district      District @relation(fields: [districtId], references: [id])
+  type          String   // RELIEF_CAMP, SCHOOL, COMMUNITY_HALL, STADIUM
+  latitude      Float
+  longitude     Float
+  address       String
+  capacity      Int
+  currentOccupancy Int   @default(0)
+  contactName   String
+  contactPhone  String
+  facilities    String   // comma-separated: FOOD, WATER, MEDICAL, ELECTRICITY
+  isActive      Boolean  @default(true)
+}
+
+// ─── Rescue Resources ───────────────────────────────────────
+model RescueResource {
+  id            Int      @id @default(autoincrement())
+  type          String   // NDRF_TEAM, SDRF_TEAM, BOAT, AMBULANCE, HELICOPTER
+  name          String
+  status        String   // AVAILABLE, DEPLOYED, MAINTENANCE
+  location      String
+  latitude      Float
+  longitude     Float
+  assignedTo    String?
+  contactPhone  String
+  lastUpdated   DateTime
+}
+
+// ─── Historical Flood Events ────────────────────────────────
+model FloodEvent {
+  id              Int      @id @default(autoincrement())
+  year            Int
+  month           Int
+  districtName    String
+  state           String
+  totalRainfall   Float    // mm
+  maxInundation   Float    // meters
+  populationAffected Int
+  villagesAffected   Int
+  economicLoss    Float    // in crores
+  duration        Int      // days
+  severity        String   // MINOR, MODERATE, MAJOR, CATASTROPHIC
+}

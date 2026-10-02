@@ -1,0 +1,12 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/alerts/page": "/alerts",
+  "/citizen/page": "/citizen",
+  "/dashboard/page": "/dashboard",
+  "/page": "/",
+  "/analytics/page": "/analytics",
+  "/shelters/page": "/shelters",
+  "/sos/page": "/sos",
+  "/map/page": "/map",
+  "/predictions/page": "/predictions"
+}

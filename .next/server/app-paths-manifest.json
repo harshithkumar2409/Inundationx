@@ -1,0 +1,12 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/alerts/page": "app/alerts/page.js",
+  "/citizen/page": "app/citizen/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/page": "app/page.js",
+  "/analytics/page": "app/analytics/page.js",
+  "/shelters/page": "app/shelters/page.js",
+  "/sos/page": "app/sos/page.js",
+  "/map/page": "app/map/page.js",
+  "/predictions/page": "app/predictions/page.js"
+}
